@@ -1,51 +1,12 @@
-// import mongoose from "mongoose";
-// import { DB_NAME } from "./constants.js";
-// import express from "express";
-// const app = express();
-// (async()=>{
-//     try{
-//     await mongoose.connect(`${process.env.MONGOOSE_URI}/${DB_NAME}`);
-//     app.on("error",(err)=>{
-//         console.error(err)
-//     })
-//     app.listen(process.env.PORT,()=>{
-//         console.log(`Server is running on port ${process.env.PORT}`)
-//     })
-//     } catch(e){
-//         console.error(e);
-//         throw e;
-//     }
-// })();
-
-
-import mongoose from "mongoose";
-import { DB_NAME } from "./constants.js";
-import express from "express";
-
-const app = express();
-
-const connectToDatabase = async () => {
-    console.log(process.env.MONGOOSE_URI)
-    try {
-        await mongoose.connect(`${process.env.MONGOOSE_URI}/${DB_NAME}`);
-        console.log("Connected to the database");
-    } catch (e) {
-        console.error("Database connection error:", e);
-        throw e;
+import connectToDatabase from "./db/conn.js";
+import {app} from "./app.js";
+connectToDatabase().then(
+    ()=>{
+        app.on("error", (err) => {
+            console.error("error occur while connecting to db", err);
+        });
+        app.listen(process.env.PORT || 3000, () => {
+            console.log("Server started at port 3000");
+        });
     }
-};
-
-const startServer = () => {
-    app.on("error", (err) => {
-        console.error("Server error:", err);
-    });
-
-    app.listen(process.env.PORT, () => {
-        console.log(`Server is running on port ${process.env.PORT}`);
-    });
-};
-
-(async () => {
-    await connectToDatabase();
-    startServer();
-})();
+).catch((err) => console.log("Error connecting to database", err));
