@@ -1,4 +1,4 @@
-import {vr as cloudinary} from "cloudinary";
+import { v2 as cloudinary} from "cloudinary";
 import fs from "fs";
 
 cloudinary.config({ 
@@ -9,6 +9,8 @@ cloudinary.config({
 
 const uploadCloudinary = async (localFilePath) => {
     try{
+
+        console.log("Clodnary local path",localFilePath)
             if(!localFilePath) return null
 
             const response = await cloudinary.uploader.upload(localFilePath,
